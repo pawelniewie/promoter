@@ -9,8 +9,23 @@ require "promoter/feedback"
 require "promoter/metric"
 
 module Promoter
-  class << self
-    attr_accessor :api_key
-    attr_accessor :debug
+  class Client
+    attr_reader :api_key
+    attr_reader :debug
+    attr_reader :request
+
+    def initialize(api_key, debug = false)
+      @api_key = api_key
+      @debug = debug
+      @request = Request.new(self)
+    end
+
+    def campaign(attrs)
+      Campaign.new(self, attrs)
+    end
+
+    def contact()
+      ContactClient.new(self)
+    end
   end
 end

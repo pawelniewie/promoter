@@ -3,7 +3,9 @@ require 'promoter'
 
 require 'webmock/rspec'
 
-Promoter.api_key = 'ribeyeeulorem'
+def promoter()
+  Promoter::Client.new('ribeyeeulorem')
+end
 
 def fixture(filename)
   File.read("#{File.dirname(__FILE__)}/fixtures/#{filename}")

@@ -1,31 +1,33 @@
 module Promoter
 
   class Contact
-
     attr_reader :id, :email, :first_name, :last_name, :created_date, :attributes
 
-    API_URL =  "https://app.promoter.io/api/contacts"
-
     def initialize(attrs)
-      @id = attrs["id"]
-      @email = attrs["email"]
-      @first_name = attrs["first_name"]
-      @last_name = attrs["last_name"]
-      @created_date = Time.parse(attrs["created_date"]) if attrs["created_date"]
-      @attributes = attrs["attributes"]
+      @id = attrs['id']
+      @email = attrs['email']
+      @first_name = attrs['first_name']
+      @last_name = attrs['last_name']
+      @created_date = Time.parse(attrs['created_date']) if attrs['created_date']
+      @attributes = attrs['attributes']
     end
 
-    def destroy
-      Contact.destroy(self.email)
+  end
+
+  class ContactClient
+    API_URL = 'https://app.promoter.io/api/contacts'
+
+    def initialize(client)
+      @request = client.request
     end
 
     # Parameter     Optional?  Description
     # page	        yes	       Returns which page of results to return.
     #                          Defaults to 1
     # email         yes        Filter the results by email address.
-    def self.all(options={})
+    def all(options={})
       if !options.is_a?(Hash)
-        puts "-- DEPRECATION WARNING--"
+        puts '-- DEPRECATION WARNING--'
         puts "Passing in a number as a page is deprecated and will be removed from future versions of this gem.\nInstead pass in a hash of attributes.\n\n e.g. Promoter::Contact.all(page: 2)"
         query_string = "page=#{options}"
       else
@@ -33,21 +35,21 @@ module Promoter
         options[:page] ||= 1
         query_string = URI.encode_www_form(options)
       end
-      response = Request.get("#{API_URL}/?#{query_string}")
-      response['results'].map {|attrs| new(attrs)}
+      response = @request.get("#{API_URL}/?#{query_string}")
+      response['results'].map {|attrs| Contact.new(attrs)}
     end
 
-    def self.find(id)
-      response = Request.get("#{API_URL}/#{id}")
-      new(response)
+    def find(id)
+      response = @request.get("#{API_URL}/#{id}")
+      Contact.new(response)
     end
 
-    def self.destroy(email)
+    def destroy(email)
       attributes = {
         email: email
       }
-      response = Request.post("#{API_URL}/remove/", attributes)
-      new(response)
+      response = @request.post("#{API_URL}/remove/", attributes)
+      Contact.new(response)
     end
 
     # Contact Params
@@ -69,14 +71,14 @@ module Promoter
     #                          be added correctly. Otherwise, the contact will
     #                          be associated to a default generated contact list
     #                          for your given organization.
-    def self.create(attributes)
-      response = Request.post(API_URL + "/", attributes)
-      new(response)
+    def create(attributes)
+      response = @request.post(API_URL + '/', attributes)
+      Contact.new(response)
     end
 
-    def self.survey(attributes)
-      response = Request.post(API_URL + "/survey/", attributes)
-      new(response)
+    def survey(attributes)
+      response = @request.post(API_URL + '/survey/', attributes)
+      Contact.new(response)
     end
 
   end
