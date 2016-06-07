@@ -1,3 +1,5 @@
+require 'promoter/base_client'
+
 module Promoter
 
   class Contact
@@ -14,11 +16,11 @@ module Promoter
 
   end
 
-  class ContactClient
+  class ContactClient < BaseClient
     API_URL = 'https://app.promoter.io/api/contacts'
 
-    def initialize(client)
-      @request = client.request
+    def model_class
+      Contact
     end
 
     # Parameter     Optional?  Description
@@ -36,20 +38,18 @@ module Promoter
         query_string = URI.encode_www_form(options)
       end
       response = @request.get("#{API_URL}/?#{query_string}")
-      response['results'].map {|attrs| Contact.new(attrs)}
+      response['results'].map {|attrs| from_api attrs}
     end
 
     def find(id)
-      response = @request.get("#{API_URL}/#{id}")
-      Contact.new(response)
+      from_api @request.get("#{API_URL}/#{id}")
     end
 
     def destroy(email)
       attributes = {
         email: email
       }
-      response = @request.post("#{API_URL}/remove/", attributes)
-      Contact.new(response)
+      from_api @request.post("#{API_URL}/remove/", attributes)
     end
 
     # Contact Params
@@ -72,13 +72,11 @@ module Promoter
     #                          be associated to a default generated contact list
     #                          for your given organization.
     def create(attributes)
-      response = @request.post(API_URL + '/', attributes)
-      Contact.new(response)
+      from_api @request.post(API_URL + '/', attributes)
     end
 
     def survey(attributes)
-      response = @request.post(API_URL + '/survey/', attributes)
-      Contact.new(response)
+      from_api @request.post(API_URL + '/survey/', attributes)
     end
 
   end
