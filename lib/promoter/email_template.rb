@@ -1,8 +1,7 @@
+require 'promoter/base_client'
+
 module Promoter
-
   class EmailTemplate
-
-    API_URL =  "https://app.promoter.io/api/email"
 
     attr_reader :id, :name, :logo, :subject, :reply_to_email, :from_name,
                 :intro_message, :language, :company_brand_product_name
@@ -18,10 +17,20 @@ module Promoter
       @language = attrs["language"]
       @company_brand_product_name = attrs["company_brand_product_name"]
     end
+  end
 
-    def self.all(page=1)
-      response = Request.get("#{API_URL}/?page=#{page}")
-      response['results'].map {|attrs| new(attrs)}
+  class EmailTemplateClient < BaseClient
+
+    API_URL =  "https://app.promoter.io/api/email"
+
+
+    def model_class
+      EmailTemplate
+    end
+
+    def all(page=1)
+      response = @request.get("#{API_URL}/?page=#{page}")
+      response['results'].map {|attrs| from_api attrs}
     end
 
     # Email Template Params
@@ -38,9 +47,8 @@ module Promoter
     #                                        the 0-10 scale and below the logo
     # language                    no         The language the template is in
     # company_brand_product_name  no         The name inserted into the main question
-    def self.create(attributes)
-      response = Request.post(API_URL + "/", attributes)
-      new(response)
+    def create(attributes)
+      from_api @request.post(API_URL + "/", attributes)
     end
 
   end

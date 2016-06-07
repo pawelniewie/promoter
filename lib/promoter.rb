@@ -27,5 +27,13 @@ module Promoter
     def contact()
       ContactClient.new(self)
     end
+
+    def contact_list()
+      ContactListClient.new(self)
+    end
+
+    def email_template()
+      EmailTemplateClient.new(self)
+    end
   end
 end
