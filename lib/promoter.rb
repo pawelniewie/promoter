@@ -20,8 +20,8 @@ module Promoter
       @request = Request.new(self)
     end
 
-    def campaign(attrs)
-      Campaign.new(self, attrs)
+    def campaign()
+      CampaignClient.new(self)
     end
 
     def contact()

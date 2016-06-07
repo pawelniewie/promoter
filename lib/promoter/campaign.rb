@@ -1,9 +1,8 @@
+require 'promoter/base_client'
+
 module Promoter
 
   class Campaign
-
-    API_URL =  "https://app.promoter.io/api/campaigns"
-
     attr_reader :id, :name, :drip_duration, :contact_count, :eligible_count,
                 :last_surveyed_date, :launch_date
 
@@ -16,11 +15,20 @@ module Promoter
       @last_surveyed_date = Time.parse(attrs["last_surveyed_date"]) if attrs["last_surveyed_date"]
       @launch_date = Time.parse(attrs["launch_date"]) if attrs["launch_date"]
     end
+  end
+
+  class CampaignClient < BaseClient
+
+    API_URL =  "https://app.promoter.io/api/campaigns"
+
+    def model_class
+      Campaign
+    end
 
     # Parameter     Optional?  Description
     # page	        yes	       Returns which page of results to return.
     #                          Defaults to 1
-    def self.all(options={})
+    def all(options={})
       if !options.is_a?(Hash)
         puts "-- DEPRECATION WARNING--"
         puts "Passing in a number as a page is deprecated and will be removed from future versions of this gem.\nInstead pass in a hash of attributes.\n\n e.g. Promoter::Campaign.all(page: 2)"
@@ -30,8 +38,8 @@ module Promoter
         options[:page] ||= 1
         query_string = URI.encode_www_form(options)
       end
-      response = Request.get("#{API_URL}/?#{query_string}")
-      response['results'].map {|attrs| new(attrs)}
+      response = @request.get("#{API_URL}/?#{query_string}")
+      response['results'].map {|attrs| from_api attrs}
     end
 
     # Parameter     Optional?  Description
@@ -42,8 +50,8 @@ module Promoter
     #                          contacts who have been added or updated since you
     #                          last sent surveys. The default behavior is when
     #                          all_contacts is set to false.
-    def self.send_surveys(campaign_id, all_contacts=false)
-      response = Request.post("#{API_URL}/#{campaign_id}/send-surveys/",
+    def send_surveys(campaign_id, all_contacts=false)
+      response = @request.post("#{API_URL}/#{campaign_id}/send-surveys/",
                               { all_contacts: all_contacts, response_format: :plain })
       response.match /Success\, surveys sent\./
     end
@@ -53,9 +61,8 @@ module Promoter
     # name                        no         The name of the campaign
     # contact_list                no         The id of the contact list to associate to this campaign. The contact list will contain a list of contacts you will survey.
     # email                       no         The id of the email template you will use to survey your contacts in the contact list.
-    def self.create(attributes)
-      response = Request.post(API_URL + "/", attributes)
-      new(response)
+    def create(attributes)
+      from_api @request.post(API_URL + "/", attributes)
     end
   end
 end

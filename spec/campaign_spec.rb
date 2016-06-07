@@ -4,7 +4,7 @@ describe Promoter::Campaign do
   it 'returns all campaigns paginated' do
     stub_request(:get, "https://app.promoter.io/api/campaigns/?page=2").
          to_return(status: 200, body: fixture('campaigns.json'))
-    result = Promoter::Campaign.all(page: 2)
+    result = promoter.campaign.all(page: 2)
 
     expect(result.count).to eq(1)
 
@@ -24,7 +24,7 @@ describe Promoter::Campaign do
   it 'returns all campaigns paginated (deprecated style)' do
     stub_request(:get, "https://app.promoter.io/api/campaigns/?page=2").
          to_return(status: 200, body: fixture('campaigns.json'))
-    result = Promoter::Campaign.all(2)
+    result = promoter.campaign.all(2)
 
     expect(result.count).to eq(1)
 
@@ -37,7 +37,7 @@ describe Promoter::Campaign do
          with(body: {all_contacts: false}.to_json).
          to_return(status: 200, body: "Success\, surveys sent\.")
 
-    result = Promoter::Campaign.send_surveys(77)
+    result = promoter.campaign.send_surveys(77)
     expect(result).to be_truthy
   end
 
@@ -46,7 +46,7 @@ describe Promoter::Campaign do
          with(body: {all_contacts: true}.to_json).
          to_return(status: 200, body: "Success\, surveys sent\.")
 
-    result = Promoter::Campaign.send_surveys(77, true)
+    result = promoter.campaign.send_surveys(77, true)
     expect(result).to be_truthy
   end
 
@@ -59,7 +59,7 @@ describe Promoter::Campaign do
         with(body: params.to_json).
         to_return(status: 200, body: fixture('single_campaign.json'))
 
-    campaign = Promoter::Campaign.create(name: "Newest Campaign Name",
+    campaign = promoter.campaign.create(name: "Newest Campaign Name",
                                          contact_list: 1,
                                          email: 1)
     expect(campaign.class).to eq(Promoter::Campaign)
