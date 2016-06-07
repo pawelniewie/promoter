@@ -8,7 +8,7 @@ describe Promoter::Feedback do
       url = "https://app.promoter.io/api/feedback/?score=8"
       stub_get_request(url, 'feedback_by_score.json')
 
-      result = Promoter::Feedback.all(score: 8)
+      result = promoter.feedback.all(score: 8)
 
       expect(result.count).to eq(1)
 
@@ -27,7 +27,7 @@ describe Promoter::Feedback do
       url = "https://app.promoter.io/api/feedback/?score_type=promoter"
       stub_get_request(url, 'feedback_by_score_type.json')
 
-      result = Promoter::Feedback.all(score_type: :promoter)
+      result = promoter.feedback.all(score_type: :promoter)
 
       expect(result.count).to eq(1)
 
@@ -46,7 +46,7 @@ describe Promoter::Feedback do
       url = "https://app.promoter.io/api/feedback/?survey_campaign=2"
       stub_get_request(url, 'feedback_by_campaign.json')
 
-      result = Promoter::Feedback.all(survey_campaign: 2)
+      result = promoter.feedback.all(survey_campaign: 2)
 
       expect(result.count).to eq(1)
 
@@ -68,7 +68,7 @@ describe Promoter::Feedback do
       url = "https://app.promoter.io/api/feedback/270"
       stub_get_request(url, "single_feedback.json")
 
-      result = Promoter::Feedback.find(270)
+      result = promoter.feedback.find(270)
 
       expect(result.class).to eq(Promoter::Feedback)
       expect(result.id).to eq(270)

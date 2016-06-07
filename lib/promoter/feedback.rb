@@ -1,10 +1,10 @@
+require 'promoter/base_client'
+
 module Promoter
 
   class Feedback
 
     attr_reader :id, :contact, :score, :score_type, :posted_date, :comment, :follow_up_url, :url
-
-    API_URL =  "https://app.promoter.io/api/feedback"
 
     def initialize(attrs)
       @id = attrs["id"]
@@ -15,6 +15,15 @@ module Promoter
       @comment = attrs["comment"]
       @follow_up_url = attrs["followup_href"]
       @follow_up_href = attrs["href"]
+    end
+  end
+
+  class FeedbackClient < BaseClient
+
+    API_URL =  "https://app.promoter.io/api/feedback"
+
+    def model_class
+      Feedback
     end
 
     # Parameter                 Required Description
@@ -30,19 +39,18 @@ module Promoter
     #                                    campaign status values: ACTIVE, COMPLETE.
     # NOTE: This url parameter does not require quotes around the value.
     # e.g. (<api-url>?survey__campaign__status=ACTIVE)
-    def self.all(attrs={})
-      response = Request.get("#{API_URL}/?#{query_string(attrs)}")
-      response['results'].map {|attrs| new(attrs)}
+    def all(attrs={})
+      response = @request.get("#{API_URL}/?#{query_string(attrs)}")
+      response['results'].map {|attrs| from_api attrs}
     end
 
-    def self.find(id)
-      response = Request.get("#{API_URL}/#{id}")
-      new(response)
+    def find(id)
+      from_api @request.get("#{API_URL}/#{id}")
     end
 
     private
 
-    def self.query_string(attrs)
+    def query_string(attrs)
       URI.encode_www_form(attrs)
     end
 

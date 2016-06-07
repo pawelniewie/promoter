@@ -35,5 +35,9 @@ module Promoter
     def email_template()
       EmailTemplateClient.new(self)
     end
+
+    def feedback()
+      FeedbackClient.new(self)
+    end
   end
 end
