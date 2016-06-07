@@ -24,7 +24,7 @@ Or install it yourself as:
 
 Set your api key with:
 ```ruby
-Promoter.api_key = 'YOUR API KEY'
+promoter = Promoter::Client.new('YOUR API KEY')
 ```
 (Put this into an initializer i.e. ```app/initializers/promoter.rb``` if using Rails.)
 
@@ -32,7 +32,7 @@ Promoter.api_key = 'YOUR API KEY'
 ### Get all feedback
 
 ```ruby
-Promoter::Feedback.all(score: 8) # => returns all feedback with a score of 8
+promoter.feedback.all(score: 8) # => returns all feedback with a score of 8
 # this is paginated. Pass page: 2 to get the second page
 # (I know, this is different from the other api calls! This will be fixed in later versions)
 ```
@@ -46,7 +46,7 @@ Possible filters:
 ### Get a specific feedback
 
 ```ruby
-Promoter::Feedback.find(79) #=> id of the feedback to return
+promoter.feedback.find(79) #=> id of the feedback to return
 ```
 
 ## Contacts
@@ -54,24 +54,24 @@ Promoter::Feedback.find(79) #=> id of the feedback to return
 ### Get all contacts
 
 ```ruby
-Promoter::Contact.all(page: 2) # => this is paginated - returns page 2 of results
+promoter.contact.all(page: 2) # => this is paginated - returns page 2 of results
 ```
 
 To find the a contact by an email pass in the ```email``` option:
 ```ruby
-Promoter::Contact.all(email: "chris@lexoo.co.uk")
+promoter.contact.all(email: "chris@lexoo.co.uk")
 ```
 
 ### Get a specific contact
 
 ```ruby
-Promoter::Contact.find(897)
+promoter.contact.find(897)
 ```
 
 ### Create a contact
 
 ```ruby
-Promoter::Contact.create(email: "chris@lexoo.co.uk",    # required
+promoter.contact.create(email: "chris@lexoo.co.uk",    # required
                          first_name: "Chris",           # optional
                          last_name: "O'Sullivan",       # optional
                          contact_list: [599],           # array of contact list ids to add to
@@ -83,13 +83,13 @@ Promoter::Contact.create(email: "chris@lexoo.co.uk",    # required
 ### Remove a contact
 
 ```ruby
-Promoter::Contact.destroy("chris@lexoo.co.uk")
+promoter.contact.destroy("chris@lexoo.co.uk")
 ```
 
 ### Survey a contact
 
 ```ruby
-Promoter::Contact.survey(email: "chris@lexoo.co.uk",    # required
+promoter.contact.survey(email: "chris@lexoo.co.uk",    # required
                          first_name: "Chris",           # optional
                          last_name: "O'Sullivan",       # optional
                          campaign: 78,                  # campaign which this belongs to
@@ -100,7 +100,7 @@ Promoter::Contact.survey(email: "chris@lexoo.co.uk",    # required
 ### Create a campaign
 
 ```ruby
-Promoter::Campaign.create(name: "Campaign Name",    # required
+promoter.campaign.create(name: "Campaign Name",    # required
                           contact_list: 1,          # required
                           email: 1)                 # required
 ```
@@ -108,13 +108,13 @@ Promoter::Campaign.create(name: "Campaign Name",    # required
 ### Get all campaigns
 
 ```ruby
-Promoter::Campaign.all(page: 2) # => this is paginated - returns page 2 of results
+promoter.campaign.all(page: 2) # => this is paginated - returns page 2 of results
 ```
 
 ### Send surveys for a campaign
 
 ```ruby
-Promoter::Campaign.send_surveys(33, false)
+promoter.campaign.send_surveys(33, false)
 ```
 
 This takes two parameters, the campaign id, and a boolean as to send out surveys to ALL of the customers for the campaign. (This is defaulted to false!)
@@ -123,47 +123,47 @@ This takes two parameters, the campaign id, and a boolean as to send out surveys
 ### Create a contact list
 
 ```ruby
-Promoter::ContactList.create(name: "List Name")    # required
+promoter.contact_list.create(name: "List Name")    # required
 ```
 
 ### Get all contact lists
 
 ```ruby
-Promoter::ContactList.all(2)  # => this is paginated - returns page 2 of results
+promoter.contact_list.all(2)  # => this is paginated - returns page 2 of results
 ```
 
 ### Get All Contacts for a Contact List
 
 ```ruby
-Promoter::ContactList.contact_ids_for(2)  
+promoter.contact_list.contact_ids_for(2)
 # => returns an array of contact ids for a contact list id
 ```
 
 ### Remove a contact from a contact list
 
 ```ruby
-Promoter::ContactList.remove_contact(contact_list_id: 7899,
+promoter.contact_list.remove_contact(contact_list_id: 7899,
                                      contact_id: 15777)  
 ```
 
 ### Remove a contact from a contact list by email
 
 ```ruby
-Promoter::ContactList.remove_contact(email: "me@me.com",
+promoter.contact_list.remove_contact(email: "me@me.com",
                                      contact_id: 15777)  
 ```
 
 ### Remove a contact from all contact lists
 
 ```ruby
-Promoter::ContactList.remove_contact(contact_id: 15777)  
+promoter.contact_list.remove_contact(contact_id: 15777)
 ```
 
 ## Email Templates
 ### Create an email template
 
 ```ruby
-Promoter::EmailTemplate.create(name: "Campaign Name", # required
+promoter.email_template.create(name: "Campaign Name", # required
                subject: "Email Name",                 # required
                logo: "<base64EncodedImageData>",      # required
                reply_to_email: "me@me.com",           # required
@@ -176,13 +176,13 @@ Promoter::EmailTemplate.create(name: "Campaign Name", # required
 ### Get all email templates
 
 ```ruby
-Promoter::EmailTemplate.all # => returns all results
+promoter.email_template.all # => returns all results
 ```
 
 ## Metrics
 
 ```ruby
-Promoter::Metric.all
+promoter.metric.all
 # => returns a list of interesting metrics that promoter has for your account
 ```
 
