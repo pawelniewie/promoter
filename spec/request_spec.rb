@@ -7,7 +7,7 @@ describe Promoter::Request do
     stub_request(:get, url).to_return(status: 401)
 
     expect {
-      Promoter::Request.get(url)
+      promoter.request.get(url)
     }.to raise_error(Promoter::Errors::Unauthorized)
   end
 
