@@ -39,5 +39,9 @@ module Promoter
     def feedback()
       FeedbackClient.new(self)
     end
+
+    def metric()
+      MetricClient.new(self)
+    end
   end
 end
