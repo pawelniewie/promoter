@@ -10,21 +10,23 @@ module Promoter
 
     def initialize(client)
       @client = client
+
+      default_options.update({headers: auth_header})
     end
 
     def get(url)
-      response = HTTParty.get(url, headers: auth_header)
+      response = self.class.get(url)
       parse_response(response)
     end
 
     def post(url, params)
       response_format = params.delete(:response_format) || :json
-      response = HTTParty.post(url, body: params.to_json, headers: auth_header)
+      response = self.class.post(url, body: params.to_json)
       parse_response(response, response_format)
     end
 
     def delete(url)
-      response = HTTParty.delete(url, headers: auth_header)
+      response = self.class.delete(url)
       parse_response(response)
     end
 
@@ -49,7 +51,6 @@ module Promoter
     end
 
     def auth_header
-      byebug
       if @client.api_key.nil?
         raise Errors::Unauthorized.new("You need to set your promoter api key. You can register for a Promoter API key with a Promoter.io Account.")
       end
