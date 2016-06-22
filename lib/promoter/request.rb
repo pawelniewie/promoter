@@ -49,10 +49,11 @@ module Promoter
     end
 
     def auth_header
+      byebug
       if @client.api_key.nil?
         raise Errors::Unauthorized.new("You need to set your promoter api key. You can register for a Promoter API key with a Promoter.io Account.")
       end
-      { "Authorization" => "Token #{@api_key}",
+      { "Authorization" => "Token #{@client.api_key}",
         'Content-Type' => 'application/json' }
     end
 
