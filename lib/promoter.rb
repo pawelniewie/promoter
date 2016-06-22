@@ -20,27 +20,27 @@ module Promoter
       @request = Request.new(self)
     end
 
-    def campaign()
+    def campaign
       CampaignClient.new(self)
     end
 
-    def contact()
+    def contact
       ContactClient.new(self)
     end
 
-    def contact_list()
+    def contact_list
       ContactListClient.new(self)
     end
 
-    def email_template()
+    def email_template
       EmailTemplateClient.new(self)
     end
 
-    def feedback()
+    def feedback
       FeedbackClient.new(self)
     end
 
-    def metric()
+    def metric
       MetricClient.new(self)
     end
   end
